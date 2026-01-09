@@ -1,0 +1,1861 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rembulan | Sistem Informasi Manajemen</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif}
+body{background:#f4f6f8;color:#1f2937;transition:.3s}
+body.dark{background:#020617;color:#e5e7eb}
+
+/* ===== LOGIN ===== */
+.login-container{min-height:100vh;display:flex;justify-content:center;align-items:center}
+.login-box{background:#fff;padding:30px;width:340px;border-radius:16px;box-shadow:0 12px 30px rgba(0,0,0,.15);text-align:center}
+body.dark .login-box{background:#020617}
+.login-box img{width:90px;margin-bottom:10px;animation:float 3s ease-in-out infinite}
+.login-box input{width:100%;padding:10px;margin-bottom:12px;border-radius:8px;border:1px solid #ccc}
+.login-box button{width:100%;padding:10px;border:none;border-radius:8px;background:#1e3a8a;color:#fff;cursor:pointer}
+
+@keyframes float{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-10px)}
+}
+
+/* ===== HEADER ===== */
+header{background:#fff;padding:18px 30px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 4px 12px rgba(0,0,0,.08)}
+body.dark header{background:#020617}
+.brand{display:flex;align-items:center;gap:10px;cursor:pointer}
+.brand img{width:40px}
+nav a{margin-left:18px;color:#1e3a8a;text-decoration:none;cursor:pointer}
+.toggle{cursor:pointer;font-size:18px}
+
+/* ===== PAGE TRANSITION ===== */
+.fade{
+  animation:fadePage .4s ease;
+}
+@keyframes fadePage{
+  from{opacity:0;transform:translateY(10px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+/* ===== HOME ===== */
+.landing{min-height:calc(100vh - 90px);display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:20px}
+.landing img{width:130px;margin-bottom:15px;animation:float 3s ease-in-out infinite}
+.menu-btn{margin-top:25px;padding:14px 34px;border:none;border-radius:30px;background:#1e3a8a;color:#fff;cursor:pointer;box-shadow:0 8px 20px rgba(0,0,0,.2)}
+
+/* ===== INFO KULIAH (ANIMATED) ===== */
+.info-kuliah{
+  margin-top:30px;
+  background:#fff;
+  padding:0 25px;
+  border-radius:16px;
+  max-width:600px;
+  overflow:hidden;
+  max-height:0;
+  opacity:0;
+  transition:all .5s ease;
+}
+.info-kuliah.show{
+  padding:25px;
+  max-height:400px;
+  opacity:1;
+}
+body.dark .info-kuliah{background:#020617}
+.info-kuliah h3{color:#1e3a8a;margin-bottom:10px}
+.info-kuliah ul{text-align:left;margin-top:10px}
+.info-kuliah li{margin-bottom:6px}
+
+/* ===== PAGE ===== */
+.page{display:none;max-width:900px;margin:auto;padding:30px}
+
+/* ===== ACCORDION ===== */
+.accordion-header{width:100%;padding:14px;margin-bottom:8px;border:none;background:#1e3a8a;color:#fff;border-radius:12px;text-align:left;cursor:pointer}
+.accordion-content{max-height:0;overflow:hidden;transition:max-height .4s ease;background:#fff;border-radius:0 0 12px 12px}
+body.dark .accordion-content{background:#020617}
+.accordion-content div{padding:20px}
+
+/* ===== TENTANG ===== */
+.profile-card{background:#fff;padding:30px;border-radius:16px;text-align:center;max-width:400px;margin:auto}
+body.dark .profile-card{background:#020617}
+.profile-card img{width:130px;height:130px;border-radius:50%;object-fit:cover;margin-bottom:15px}
+.profile-card p{margin:4px 0}
+
+/* ===== FOOTER ===== */
+footer{text-align:center;padding:15px;background:#1f2937;color:#fff}
+</style>
+</head>
+
+<body>
+
+<!-- LOGIN -->
+<div class="login-container" id="loginPage">
+  <div class="login-box">
+    <img src="rembulannn.png">
+    <h3>Login Rembulan</h3>
+    <input id="username" placeholder="Username" onkeydown="enterLogin(event)">
+    <input id="password" type="password" placeholder="Password" onkeydown="enterLogin(event)">
+    <button onclick="login()">Masuk</button>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div id="mainPage" style="display:none">
+
+<header>
+  <div class="brand" onclick="goHome()">
+    <img src="rembulannn.png">
+    <h3>Rembulan</h3>
+  </div>
+  <nav>
+    <a onclick="openPage('materi')">Materi</a>
+    <a onclick="openPage('tentang')">Tentang</a>
+    <span class="toggle" onclick="toggleDark()">🌙</span>
+  </nav>
+</header>
+
+<!-- HOME -->
+<div class="landing fade" id="landing">
+  <img src="rembulannn.png">
+  <h2>Sistem Informasi Manajemen</h2>
+  <p>Media Pembelajaran Statis</p>
+
+  <button class="menu-btn" onclick="toggleInfo()">Mulai Belajar</button>
+
+  <div class="info-kuliah" id="infoKuliah">
+    <h3>Informasi Perkuliahan</h3>
+    <ul>
+      <li><strong>Dosen:</strong> Sofa Sofiana S.Kom,M.kom</li>
+      <li><strong>Kode Kelas:</strong> 05TPLE009</li>
+      <li><strong>SKS:</strong> 2</li>
+      <li><strong>Hari:</strong> Sabtu</li>
+    </ul>
+    <button class="menu-btn" onclick="openPage('materi')">Masuk ke Materi</button>
+  </div>
+</div>
+
+<!-- MATERI -->
+<div class="page fade" id="materi">
+  <button class="accordion-header">
+  Pertemuan 1: Pengantar Sistem Informasi Manajemen
+</button>
+<div class="accordion-content">
+
+  <h4>Gambaran Umum</h4>
+  <p>
+    Pertemuan ini membahas pengertian dasar Sistem Informasi Manajemen (SIM)
+    serta peran penting sistem informasi dalam mendukung aktivitas bisnis
+    dan pengambilan keputusan manajerial di era digital.
+  </p>
+
+  <h4>Mengapa Sistem Informasi Penting</h4>
+  <p>
+    Sistem informasi menjadi fondasi utama dalam bisnis modern.
+    Organisasi menggunakan sistem informasi untuk mengelola data,
+    meningkatkan efisiensi operasional, serta merespons perubahan
+    lingkungan bisnis yang semakin dinamis.
+  </p>
+
+  <h4>Konsep Utama</h4>
+  <ul>
+    <li>Pengertian sistem dan informasi</li>
+    <li>Sistem Informasi sebagai pendukung proses bisnis</li>
+    <li>Peran SIM dalam pengambilan keputusan manajemen</li>
+    <li>Keunggulan kompetitif melalui pemanfaatan teknologi informasi</li>
+    <li>Kelangsungan usaha organisasi</li>
+  </ul>
+
+  <h4>Ringkasan</h4>
+  <p>
+    Sistem Informasi Manajemen berperan strategis dalam membantu
+    organisasi mencapai tujuan bisnis dengan menyediakan informasi
+    yang akurat, relevan, dan tepat waktu bagi manajemen.
+  </p>
+
+  <h4>Materi Pendukung</h4>
+  <p>
+    <a href="ppt/MIS01-Sistem-Informasi-Definisi.pptx" download>
+      Unduh PPT Pertemuan 1
+    </a>
+  </p>
+</div>
+<button class="accordion-header">
+  Pertemuan 2: Proses Bisnis dan Jenis Sistem Informasi
+</button>
+<div class="accordion-content">
+
+  <h4>Gambaran Umum</h4>
+  <p>
+    Pertemuan ini membahas hubungan antara proses bisnis dan sistem informasi,
+    serta berbagai jenis sistem informasi yang digunakan organisasi untuk
+    mendukung kegiatan operasional, manajerial, dan strategis.
+  </p>
+
+  <h4>Proses Bisnis dan Sistem Informasi</h4>
+  <p>
+    Proses bisnis mengacu pada cara pekerjaan dikelola, dikoordinasikan,
+    dan difokuskan untuk menghasilkan produk atau jasa yang bernilai.
+    Sistem informasi berperan dalam mendukung dan meningkatkan proses bisnis
+    agar berjalan lebih efisien dan efektif.
+  </p>
+
+  <h4>Peran Teknologi Informasi dalam Proses Bisnis</h4>
+  <ul>
+    <li>Meningkatkan efisiensi proses bisnis yang telah ada</li>
+    <li>Memungkinkan terciptanya proses bisnis baru</li>
+    <li>Mendukung perubahan dan inovasi proses bisnis</li>
+  </ul>
+
+  <h4>Jenis Sistem Informasi Berdasarkan Perspektif Organisasi</h4>
+  <ul>
+    <li>
+      <strong>Transaction Processing System (TPS)</strong><br>
+      Sistem yang mencatat dan memproses transaksi rutin harian
+      seperti penjualan, penggajian, dan penerimaan kas.
+    </li>
+    <li>
+      <strong>Management Information System (MIS)</strong><br>
+      Sistem yang menyediakan laporan kinerja terstruktur
+      bagi manajemen tingkat menengah berdasarkan data dari TPS.
+    </li>
+    <li>
+      <strong>Decision Support System (DSS)</strong><br>
+      Sistem yang membantu pengambilan keputusan tidak rutin
+      dengan menggunakan analisis data dan model analitis.
+    </li>
+    <li>
+      <strong>Executive Support System (ESS)</strong><br>
+      Sistem yang mendukung manajemen puncak dalam pengambilan
+      keputusan strategis melalui ringkasan data dan visualisasi.
+    </li>
+  </ul>
+
+  <h4>Sistem Informasi Fungsional</h4>
+  <ul>
+    <li>Sistem Informasi Penjualan dan Pemasaran</li>
+    <li>Sistem Informasi Manufaktur dan Produksi</li>
+    <li>Sistem Informasi Keuangan dan Akuntansi</li>
+    <li>Sistem Informasi Sumber Daya Manusia</li>
+  </ul>
+
+  <h4>Sistem yang Melingkupi Perusahaan</h4>
+  <p>
+    Sistem yang melingkupi perusahaan atau aplikasi perusahaan
+    bertujuan untuk mengintegrasikan berbagai proses bisnis
+    lintas fungsi agar organisasi dapat beroperasi secara efisien.
+  </p>
+  <ul>
+    <li>Enterprise Resource Planning (ERP)</li>
+    <li>Supply Chain Management (SCM)</li>
+    <li>Customer Relationship Management (CRM)</li>
+    <li>Knowledge Management System (KMS)</li>
+  </ul>
+
+  <h4>Ringkasan</h4>
+  <p>
+    Berbagai jenis sistem informasi memiliki peran yang berbeda
+    dalam mendukung proses bisnis dan pengambilan keputusan.
+    Integrasi sistem informasi membantu organisasi meningkatkan
+    efisiensi, fleksibilitas, dan daya saing.
+  </p>
+
+  <h4>Materi Pendukung</h4>
+  <p>
+    <a href="ppt/MIS02-TPS-MIS-DSS-ESS.pptx" download>
+      Unduh PPT Pertemuan 2
+    </a>
+  </p>
+</div>
+<button class="accordion-header">
+  Pertemuan 3: Sistem Informasi dan Pengolahan Data
+</button>
+<div class="accordion-content">
+
+  <h4>Gambaran Umum</h4>
+  <p>
+    Pertemuan ini membahas konsep pengolahan data dalam sistem informasi,
+    serta pemanfaatan komputer dalam berbagai bidang seperti pendidikan,
+    bisnis, dan pemerintahan. Materi ini membantu memahami bagaimana data
+    diolah menjadi informasi yang bernilai bagi organisasi.
+  </p>
+
+  <h4>Konsep Dasar Pengolahan Data</h4>
+  <p>
+    Pengolahan data merupakan proses mengubah data mentah menjadi informasi
+    yang berguna. Proses ini melibatkan pengumpulan, pengolahan, penyimpanan,
+    dan penyajian data agar dapat digunakan dalam pengambilan keputusan.
+  </p>
+
+  <h4>Pemanfaatan Komputer dalam Bidang Pendidikan</h4>
+  <ul>
+    <li>
+      <strong>Computer Based Education (CBE)</strong><br>
+      Pemanfaatan komputer sebagai media utama dalam proses pembelajaran.
+    </li>
+    <li>
+      <strong>Computer Assisted Instruction (CAI)</strong><br>
+      Komputer digunakan untuk membantu proses belajar mengajar,
+      seperti latihan soal dan simulasi pembelajaran.
+    </li>
+    <li>
+      <strong>Computer Assisted Testing (CAT)</strong><br>
+      Komputer digunakan sebagai sarana evaluasi dan pengujian berbasis digital.
+    </li>
+  </ul>
+
+  <h4>Sistem Informasi dalam Organisasi</h4>
+  <p>
+    Sistem informasi membantu organisasi dalam mengelola data operasional
+    serta mendukung aktivitas manajerial dan pengambilan keputusan.
+  </p>
+  <ul>
+    <li><strong>Transaction Processing System (TPS)</strong> untuk transaksi rutin</li>
+    <li><strong>Management Information System (MIS)</strong> untuk laporan manajerial</li>
+    <li><strong>Decision Support System (DSS)</strong> untuk analisis keputusan</li>
+    <li><strong>Executive Support System (ESS)</strong> untuk keputusan strategis</li>
+  </ul>
+
+  <h4>Penerapan Sistem Informasi di Pemerintahan</h4>
+  <p>
+    Sistem informasi juga diterapkan dalam sektor pemerintahan melalui
+    konsep <em>Electronic Government (E-Government)</em>, yang bertujuan
+    meningkatkan transparansi, efisiensi, dan kualitas layanan publik.
+  </p>
+
+  <h4>Ringkasan</h4>
+  <p>
+    Pengolahan data merupakan inti dari sistem informasi.
+    Dengan memanfaatkan komputer dan teknologi informasi,
+    organisasi dapat menghasilkan informasi yang akurat dan tepat waktu
+    untuk mendukung kegiatan operasional dan pengambilan keputusan.
+  </p>
+
+  <h4>Materi Pendukung</h4>
+  <p>
+    <a href="ppt/MIS03-Sistem-Informasi-Pengolahan-Data1.pptx" download>
+      Unduh PPT Pertemuan 3
+    </a>
+  </p>
+</div>
+<button class="accordion-header">
+  Pertemuan 4: Lanjutan Sistem Informasi dan Pengolahan Data
+</button>
+<div class="accordion-content">
+
+  <h4>Gambaran Umum</h4>
+  <p>
+    Pertemuan ini membahas lanjutan konsep sistem informasi dan pengolahan data,
+    khususnya pemanfaatan komputer dalam berbagai bidang seperti pendidikan,
+    dunia usaha, dan pemerintahan. Materi ini menunjukkan peran strategis
+    teknologi informasi dalam meningkatkan efisiensi dan kualitas layanan.
+  </p>
+
+  <h4>Pemanfaatan Komputer dalam Dunia Pendidikan</h4>
+  <p>
+    Dalam dunia pendidikan, komputer tidak hanya digunakan sebagai media
+    pengajaran, tetapi juga untuk menunjang kegiatan administrasi dan evaluasi.
+  </p>
+  <ul>
+    <li><strong>Computer Based Education (CBE)</strong>: pemanfaatan komputer secara menyeluruh dalam pendidikan</li>
+    <li><strong>Computer Assisted Testing (CAT)</strong>: ujian berbasis komputer yang interaktif</li>
+    <li><strong>Computer Assisted Guidance (CAG)</strong>: sistem pendukung pengarahan dan pengambilan keputusan</li>
+    <li><strong>Computer Managed Instruction (CMI)</strong>: pengelolaan dan pemantauan kegiatan pembelajaran</li>
+  </ul>
+
+  <h4>Aplikasi Pengajaran Berbasis Komputer</h4>
+  <ul>
+    <li><strong>Computer Assisted Instruction (CAI)</strong>:
+      <ul>
+        <li>Latih dan praktik (drill and practice)</li>
+        <li>Tutorial untuk materi baru</li>
+        <li>Simulasi permasalahan kompleks</li>
+        <li>Permainan edukatif</li>
+      </ul>
+    </li>
+  </ul>
+
+  <h4>Contoh Sistem Pembelajaran Berbasis Komputer</h4>
+  <ul>
+    <li><strong>PLATO</strong>: sistem CAI yang digunakan untuk pembelajaran jarak jauh dan pelatihan</li>
+    <li><strong>TICCIT</strong>: sistem pembelajaran interaktif dengan pendekatan penjelasan terstruktur</li>
+    <li><strong>LOGO</strong>: metode pembelajaran berbasis pemecahan masalah dan eksplorasi</li>
+    <li><strong>Smalltalk-80</strong>: metode pembelajaran berbasis objek dengan antarmuka grafis</li>
+  </ul>
+
+  <h4>Pemanfaatan Komputer dalam Dunia Usaha</h4>
+  <p>
+    Dalam dunia bisnis, teknologi informasi digunakan untuk mendukung
+    kegiatan operasional, pengambilan keputusan manajerial, serta strategi
+    keunggulan kompetitif.
+  </p>
+  <ul>
+    <li>Mendukung proses pemasaran dan penjualan</li>
+    <li>Mendukung produksi dan manufaktur</li>
+    <li>Mendukung manajemen sumber daya manusia</li>
+    <li>Mendukung pengelolaan keuangan dan laporan</li>
+  </ul>
+
+  <h4>Sistem Informasi Manajemen dan Pengolahan Data</h4>
+  <p>
+    Sistem Informasi Manajemen (SIM) merupakan jaringan prosedur pengolahan data
+    yang dirancang untuk menyediakan informasi bagi manajemen dalam
+    pengambilan keputusan.
+  </p>
+
+  <h4>Aktivitas dalam Pengolahan Data</h4>
+  <ul>
+    <li>Input (masukan data)</li>
+    <li>Processing (perhitungan dan pengolahan)</li>
+    <li>Output (keluaran informasi)</li>
+    <li>Storage (penyimpanan data)</li>
+    <li>Transmission (pemindahan data)</li>
+  </ul>
+
+  <h4>Model Sistem Pengolahan Data</h4>
+  <ul>
+    <li><strong>Sistem Terbuka</strong>: tanpa umpan balik, risiko kesalahan tinggi</li>
+    <li><strong>Sistem Lingkaran Tertutup</strong>: menggunakan umpan balik untuk pengendalian kualitas</li>
+  </ul>
+
+  <h4>Pemanfaatan Komputer dalam Pemerintahan</h4>
+  <p>
+    Penerapan sistem informasi dalam pemerintahan dikenal sebagai
+    <strong>E-Government</strong>, yang bertujuan meningkatkan transparansi,
+    efisiensi, dan kualitas layanan publik.
+  </p>
+  <ul>
+    <li>Government to Citizen (G2C)</li>
+    <li>Government to Business (G2B)</li>
+    <li>Government to Government (G2G)</li>
+  </ul>
+
+  <h4>Manfaat E-Government</h4>
+  <ul>
+    <li>Meningkatkan kualitas layanan publik</li>
+    <li>Mendukung transparansi dan good governance</li>
+    <li>Meningkatkan efisiensi dan efektivitas pelayanan</li>
+    <li>Memperluas partisipasi masyarakat</li>
+  </ul>
+
+  <h4>Ringkasan</h4>
+  <p>
+    Pemanfaatan komputer dan sistem informasi memberikan dampak signifikan
+    dalam dunia pendidikan, bisnis, dan pemerintahan. Dengan pengolahan data
+    yang baik dan dukungan sistem informasi manajemen, organisasi dapat
+    meningkatkan kinerja, efisiensi, dan kualitas layanan.
+  </p>
+
+  <h4>Materi Pendukung</h4>
+  <p>
+    <a href="ppt/MIS04-Lanjutan-Sistem-Informasi-Pengolahan-Data2.pptx" download>
+      Unduh PPT Pertemuan 4
+    </a>
+  </p>
+</div>
+<button class="accordion-header">
+  Pertemuan 5: Profesi di Bidang Teknologi Informasi
+</button>
+<div class="accordion-content">
+
+  <h4>Gambaran Umum</h4>
+  <p>
+    Pertemuan ini membahas berbagai profesi di bidang Teknologi Informasi (TI),
+    serta konsep profesionalisme dan etika profesi yang harus dimiliki oleh
+    tenaga kerja di bidang TI. Materi ini membantu mahasiswa memahami
+    peluang karier dan tuntutan kompetensi di dunia kerja.
+  </p>
+
+  <h4>Pengertian Pekerjaan dan Profesi</h4>
+  <p>
+    Pekerjaan merupakan aktivitas manusia untuk memenuhi kebutuhan hidup,
+    sedangkan profesi adalah bagian dari pekerjaan yang menuntut keahlian,
+    pengetahuan khusus, serta pendidikan formal dan pengalaman tertentu.
+  </p>
+
+  <h4>Profesional dan Profesionalisme</h4>
+  <p>
+    Seorang profesional dituntut untuk menguasai ilmu secara mendalam,
+    mampu mengubah ilmu menjadi keterampilan, serta menjunjung tinggi
+    etika dan integritas profesi.
+  </p>
+  <ul>
+    <li>Memiliki komitmen dan tanggung jawab tinggi</li>
+    <li>Bersikap jujur dan berpikir sistematis</li>
+    <li>Terus meningkatkan kemampuan melalui pelatihan dan sertifikasi</li>
+  </ul>
+
+  <h4>Etika Profesi dan Kode Etik</h4>
+  <p>
+    Etika profesi merupakan standar moral yang digunakan untuk menilai
+    perilaku profesional dalam menjalankan tugasnya. Kode etik berfungsi
+    sebagai pedoman bagi anggota profesi agar bertindak secara bertanggung jawab.
+  </p>
+  <ul>
+    <li>Menjaga kerahasiaan klien</li>
+    <li>Menghindari konflik kepentingan</li>
+    <li>Menghormati hak dan otonomi pihak lain</li>
+  </ul>
+
+  <h4>Bidang Keahlian dan Spesialisasi TI</h4>
+  <ul>
+    <li>Hardware dan Network Administration</li>
+    <li>Programmer dan System Analyst</li>
+    <li>Database Administrator</li>
+    <li>System Administrator</li>
+    <li>Artificial Intelligence dan Software Engineering</li>
+  </ul>
+
+  <h4>Contoh Profesi di Bidang Teknologi Informasi</h4>
+  <ul>
+    <li><strong>Programmer</strong>: mengembangkan dan memelihara perangkat lunak</li>
+    <li><strong>System Analyst</strong>: menganalisis dan merancang sistem informasi</li>
+    <li><strong>Network Specialist</strong>: merancang dan mengelola jaringan komputer</li>
+    <li><strong>Database Administrator</strong>: mengelola basis data organisasi</li>
+    <li><strong>Project Manager</strong>: mengelola proyek pengembangan sistem</li>
+    <li><strong>Graphic Designer</strong>: merancang desain visual dan antarmuka</li>
+    <li><strong>Trainer dan Konsultan TI</strong>: memberikan pelatihan dan solusi TI</li>
+  </ul>
+
+  <h4>Peluang Kerja di Bidang Teknologi Informasi</h4>
+  <p>
+    Bidang Teknologi Informasi memiliki peluang kerja yang luas, baik di dalam
+    maupun luar negeri. Perkembangan industri telematika mendorong meningkatnya
+    kebutuhan tenaga profesional TI di berbagai sektor.
+  </p>
+
+  <h4>Persyaratan Menjadi Profesional TI</h4>
+  <ul>
+    <li>Menguasai keahlian sesuai bidang yang dipilih</li>
+    <li>Bersedia terus belajar mengikuti perkembangan teknologi</li>
+    <li>Mampu bekerja sama dengan berbagai disiplin ilmu</li>
+  </ul>
+
+  <h4>Ringkasan</h4>
+  <p>
+    Profesi di bidang Teknologi Informasi menuntut keahlian khusus,
+    sikap profesional, serta pemahaman etika profesi. Dengan kompetensi
+    yang tepat dan komitmen untuk terus belajar, bidang TI menawarkan
+    peluang karier yang luas dan menjanjikan.
+  </p>
+
+  <h4>Materi Pendukung</h4>
+  <p>
+    <a href="ppt/MIS05-Profesi-Di-Bidang-Teknologi-Informasi.pptx" download>
+      Unduh PPT Pertemuan 5
+    </a>
+  </p>
+</div>
+<button class="accordion-header">
+  Pertemuan 6: Sistem Informasi, Organisasi, dan Strategi
+</button>
+<div class="accordion-content">
+
+  <h4>Gambaran Umum</h4>
+  <p>
+    Pertemuan ini membahas hubungan antara Sistem Informasi (SI) dengan
+    organisasi serta peran SI dalam mendukung strategi bisnis.
+    Sistem informasi tidak hanya memengaruhi cara organisasi bekerja,
+    tetapi juga dipengaruhi oleh struktur, budaya, dan lingkungan organisasi.
+  </p>
+
+  <h4>Sistem Informasi dan Organisasi</h4>
+  <p>
+    Sistem informasi dan organisasi saling memengaruhi satu sama lain.
+    Sistem informasi dibangun oleh manajemen untuk mendukung kepentingan
+    organisasi, namun pada saat yang sama organisasi harus mampu
+    menyesuaikan diri dengan dampak teknologi informasi.
+  </p>
+  <p>
+    Interaksi antara teknologi informasi dan organisasi bersifat kompleks
+    dan dipengaruhi oleh berbagai faktor seperti struktur organisasi,
+    proses bisnis, budaya, politik internal, serta keputusan manajemen.
+  </p>
+
+  <h4>Pengertian Organisasi</h4>
+  <p>
+    Organisasi merupakan struktur formal yang stabil yang mengambil
+    sumber daya dari lingkungan, memprosesnya, dan menghasilkan output
+    berupa produk atau jasa.
+  </p>
+
+  <h4>Elemen Utama dalam Organisasi</h4>
+  <ul>
+    <li>Modal dan tenaga kerja sebagai faktor produksi utama</li>
+    <li>Proses produksi yang mengubah input menjadi output</li>
+    <li>Produk dan jasa yang dikonsumsi oleh lingkungan</li>
+  </ul>
+
+  <h4>Karakteristik Organisasi</h4>
+  <ul>
+    <li>Rutinitas dan proses bisnis</li>
+    <li>Struktur organisasi dan hierarki</li>
+    <li>Budaya dan politik organisasi</li>
+    <li>Lingkungan tempat organisasi beroperasi</li>
+  </ul>
+
+  <h4>Peran Sistem Informasi dalam Organisasi</h4>
+  <p>
+    Sistem informasi telah menjadi alat integral, online, dan interaktif
+    yang sangat terlibat dalam operasi harian serta proses pengambilan
+    keputusan organisasi.
+  </p>
+  <p>
+    Dalam beberapa dekade terakhir, sistem informasi telah mengubah
+    ekonomi organisasi dan meningkatkan kemampuan dalam mengelola pekerjaan.
+  </p>
+
+  <h4>Internet dan Dampaknya bagi Organisasi</h4>
+  <p>
+    Internet, khususnya World Wide Web (WWW), memiliki dampak besar
+    terhadap proses bisnis internal dan hubungan eksternal organisasi.
+  </p>
+  <ul>
+    <li>Meningkatkan aksesibilitas dan distribusi informasi</li>
+    <li>Mengurangi biaya transaksi dan keagenan</li>
+    <li>Membuka peluang pasar baru</li>
+  </ul>
+
+  <h4>Lingkungan Persaingan dan Internet</h4>
+  <ul>
+    <li><strong>Daya tawar pelanggan</strong>: informasi harga dan produk semakin transparan</li>
+    <li><strong>Daya tawar pemasok</strong>: transaksi online meningkatkan posisi tawar</li>
+    <li><strong>Ancaman pendatang baru</strong>: internet menurunkan hambatan masuk pasar</li>
+    <li><strong>Persaingan perusahaan</strong>: meningkatnya tekanan harga dan kompetisi</li>
+  </ul>
+
+  <h4>Strategi Bisnis Berbasis Sistem Informasi</h4>
+  <ul>
+    <li><strong>Kepemimpinan biaya rendah</strong>: menekan biaya dengan SI</li>
+    <li><strong>Diferensiasi produk</strong>: menciptakan keunikan produk/jasa</li>
+    <li><strong>Fokus pada ceruk pasar</strong>: melayani segmen tertentu</li>
+    <li><strong>Kedekatan dengan pelanggan dan pemasok</strong></li>
+  </ul>
+
+  <h4>Sinergi dan Kompetensi Inti</h4>
+  <p>
+    Sistem informasi dapat meningkatkan sinergi antar unit bisnis
+    dan memperkuat kompetensi inti perusahaan, yaitu aktivitas
+    yang menjadi keunggulan utama organisasi.
+  </p>
+
+  <h4>Strategi Berbasis Jaringan</h4>
+  <ul>
+    <li>Ekonomi jaringan</li>
+    <li>Model perusahaan virtual</li>
+    <li>Ekosistem bisnis digital</li>
+  </ul>
+
+  <h4>Perusahaan Virtual</h4>
+  <p>
+    Perusahaan virtual adalah organisasi yang menggunakan jaringan
+    untuk menghubungkan aset, sumber daya, dan kemampuan dari berbagai
+    perusahaan tanpa terikat secara fisik.
+  </p>
+  <p>
+    Model ini memungkinkan organisasi bergerak cepat dalam merespons
+    peluang pasar dan keterbatasan sumber daya.
+  </p>
+
+  <h4>Ringkasan</h4>
+  <p>
+    Sistem informasi memiliki peran strategis dalam mendukung
+    organisasi dan keunggulan bersaing. Keberhasilan penerapan SI
+    sangat bergantung pada keselarasan antara teknologi,
+    struktur organisasi, budaya, dan strategi bisnis.
+  </p>
+
+  <h4>Materi Pendukung</h4>
+  <p>
+    <a href="ppt/MIS06-Sistem-Informasi-Organisasi-dan-Strategi.pptx" download>
+      Unduh PPT Pertemuan 6
+    </a>
+  </p>
+</div>
+<button class="accordion-header">
+  Pertemuan 7: Struktur Organisasi
+</button>
+<div class="accordion-content">
+
+  <h4>Gambaran Umum</h4>
+  <p>
+    Pertemuan ini membahas konsep Struktur Organisasi (Organizational Structure),
+    yaitu bagaimana sebuah perusahaan mengatur pembagian tugas, tanggung jawab,
+    dan hubungan kerja untuk mencapai sasaran strategis organisasi.
+  </p>
+
+  <h4>Sasaran Pembelajaran</h4>
+  <ul>
+    <li>Menjelaskan peran struktur organisasi dalam pencapaian strategi perusahaan</li>
+    <li>Mengidentifikasi metode departementalisasi dalam organisasi</li>
+  </ul>
+
+  <h4>Pengertian Struktur Organisasi</h4>
+  <p>
+    Struktur organisasi merupakan pengaturan formal mengenai alokasi karyawan
+    ke dalam berbagai tugas pekerjaan serta hubungan antar jabatan dalam organisasi.
+  </p>
+  <p>
+    Struktur organisasi biasanya digambarkan dalam bentuk
+    <strong>Bagan Organisasi (Organizational Chart)</strong>.
+  </p>
+
+  <h4>Bagan Organisasi dan Alur Perintah</h4>
+  <p>
+    Bagan organisasi menunjukkan hubungan tanggung jawab dan wewenang
+    antar posisi pekerjaan.
+  </p>
+  <p>
+    <strong>Alur Perintah (Chain of Command)</strong> menjelaskan kepada siapa
+    seorang karyawan harus bertanggung jawab.
+  </p>
+
+  <h4>Dewan Direksi (Board of Directors)</h4>
+  <p>
+    Dewan Direksi merupakan sekelompok eksekutif yang bertugas memonitor
+    kinerja presiden perusahaan dan manajer tingkat atas.
+  </p>
+  <ul>
+    <li>Anggota internal (misalnya CEO)</li>
+    <li>Anggota eksternal dari perusahaan lain</li>
+  </ul>
+
+  <h4>Elemen-elemen Struktur Organisasi</h4>
+  <ul>
+    <li>Tinggi organisasi (organizational height)</li>
+    <li>Sentralisasi vs desentralisasi</li>
+    <li>Posisi lini dan staf</li>
+    <li>Struktur alternatif</li>
+    <li>Departementalisasi</li>
+  </ul>
+
+  <h4>Jangkauan Pengawasan (Span of Control)</h4>
+  <ul>
+    <li>
+      <strong>Tall Organization</strong> (span sempit):
+      pengawasan ketat dengan banyak jenjang manajemen
+    </li>
+    <li>
+      <strong>Flat Organization</strong> (span lebar):
+      lebih sedikit jenjang, pengambilan keputusan lebih cepat
+    </li>
+  </ul>
+
+  <h4>Sentralisasi dan Desentralisasi</h4>
+  <p>
+    <strong>Sentralisasi</strong> berarti pengambilan keputusan terpusat
+    pada manajemen tingkat atas.
+  </p>
+  <p>
+    <strong>Desentralisasi</strong> memberikan kewenangan pengambilan
+    keputusan kepada manajer tingkat bawah untuk meningkatkan fleksibilitas
+    dan motivasi kerja.
+  </p>
+
+  <h4>Posisi Lini dan Staf</h4>
+  <ul>
+    <li>
+      <strong>Posisi Lini</strong>: berhubungan langsung dengan pencapaian
+      tujuan utama organisasi
+    </li>
+    <li>
+      <strong>Posisi Staf</strong>: mendukung posisi lini dalam menjalankan tugas
+    </li>
+  </ul>
+
+  <h4>Struktur Organisasi Alternatif</h4>
+  <ul>
+    <li>
+      <strong>Organisasi Matriks</strong>: karyawan memiliki lebih dari satu atasan
+      dalam proyek tertentu
+    </li>
+    <li>
+      <strong>Intrapreneurship</strong>: karyawan didorong berpikir seperti wirausahawan
+    </li>
+  </ul>
+
+  <h4>Struktur Organisasi Informal</h4>
+  <p>
+    Struktur informal merupakan jaringan komunikasi yang terbentuk secara alami
+    antar karyawan di luar struktur formal.
+  </p>
+  <ul>
+    <li>Keuntungan: meningkatkan pembelajaran dan fleksibilitas</li>
+    <li>Kerugian: potensi penyebaran informasi yang tidak akurat</li>
+  </ul>
+
+  <h4>Departementalisasi</h4>
+  <p>
+    Departementalisasi adalah proses pembentukan departemen dalam organisasi.
+  </p>
+  <ul>
+    <li>Berdasarkan fungsi</li>
+    <li>Berdasarkan produk</li>
+    <li>Berdasarkan lokasi</li>
+    <li>Berdasarkan pelanggan</li>
+  </ul>
+
+  <h4>Ringkasan</h4>
+  <p>
+    Struktur organisasi menentukan bagaimana pekerjaan dibagi,
+    dikelola, dan dikoordinasikan. Struktur yang tepat membantu
+    organisasi bekerja lebih efektif, efisien, dan selaras dengan
+    strategi bisnis.
+  </p>
+
+  <h4>Materi Pendukung</h4>
+  <p>
+    <a href="ppt/MIS07.-Struktur Organisasi.pptx" download>
+      Unduh PPT Pertemuan 7
+    </a>
+  </p>
+</div>
+<button class="accordion-header">
+  Pertemuan 8: Etika dalam Sistem Informasi
+</button>
+<div class="accordion-content">
+
+  <h4>Gambaran Umum</h4>
+  <p>
+    Pertemuan ini membahas isu etika, sosial, dan moral yang muncul
+    akibat pemanfaatan teknologi informasi dalam organisasi dan masyarakat.
+    Perkembangan sistem informasi memberikan banyak manfaat, namun juga
+    menimbulkan berbagai dilema etika.
+  </p>
+
+  <h4>Era Informasi dan Peran Komputer</h4>
+  <p>
+    Di era informasi, jutaan komputer terhubung melalui jaringan
+    dan memproses data dalam skala besar. Komputer mampu bekerja
+    secara terus-menerus, lebih efisien, dan tanpa kelelahan,
+    sehingga banyak peran manusia mulai tergantikan.
+  </p>
+
+  <h4>Komputer vs Manusia</h4>
+  <p>
+    Dengan alasan efisiensi dan ekonomi, banyak pekerjaan manusia
+    digantikan oleh komputer, mulai dari pekerjaan administratif
+    hingga profesi profesional seperti akuntan, guru, dan analis.
+  </p>
+
+  <h4>Pengertian Etika</h4>
+  <p>
+    Etika (ethics) merujuk pada prinsip benar dan salah yang digunakan
+    seseorang sebagai pelaku moral yang bebas dalam mengambil keputusan
+    dan mengarahkan perilakunya.
+  </p>
+
+  <h4>Isu Etika dalam Sistem Informasi</h4>
+  <p>
+    Penggunaan internet dan perdagangan elektronik memunculkan
+    tantangan etika baru dalam sistem informasi.
+  </p>
+
+  <h4>Contoh Pelanggaran Etika Perusahaan</h4>
+  <ul>
+    <li>
+      <strong>Enron</strong>: manipulasi laporan keuangan yang menyebabkan kebangkrutan
+    </li>
+    <li>
+      <strong>WorldCom</strong>: penggelembungan pendapatan secara ilegal
+    </li>
+    <li>
+      <strong>PT Bank Lippo Tbk</strong>: perbedaan laporan keuangan kepada regulator dan publik
+    </li>
+  </ul>
+
+  <h4>Lima Dimensi Moral Era Informasi</h4>
+  <ul>
+    <li>Hak dan kewajiban informasi</li>
+    <li>Privasi dan kebebasan di era internet</li>
+    <li>Kepemilikan dan kekayaan intelektual</li>
+    <li>Akuntabilitas, liabilitas, dan pengendalian</li>
+    <li>Kualitas sistem dan kualitas hidup</li>
+  </ul>
+
+  <h4>Empat Isu Etika dalam Teknologi Informasi</h4>
+  <ul>
+    <li>
+      <strong>Privasi</strong>: hak individu atas data pribadi
+    </li>
+    <li>
+      <strong>Akurasi</strong>: kebenaran dan keandalan informasi
+    </li>
+    <li>
+      <strong>Properti</strong>: kepemilikan informasi dan hak cipta
+    </li>
+    <li>
+      <strong>Aksesibilitas</strong>: hak dan biaya dalam mengakses informasi
+    </li>
+  </ul>
+
+  <h4>Etika dalam Masyarakat Informasi</h4>
+  <ul>
+    <li>
+      <strong>Tanggung jawab (Responsibility)</strong>:
+      kesediaan menerima konsekuensi dari keputusan
+    </li>
+    <li>
+      <strong>Akuntabilitas (Accountability)</strong>:
+      mekanisme penentuan pihak yang bertanggung jawab
+    </li>
+    <li>
+      <strong>Liabilitas (Liability)</strong>:
+      perlindungan hukum atas kerugian yang ditimbulkan
+    </li>
+    <li>
+      <strong>Proses wajib (Due Process)</strong>:
+      penegakan hukum yang adil dan transparan
+    </li>
+  </ul>
+
+  <h4>Langkah Analisis Etika</h4>
+  <ul>
+    <li>Identifikasi dan jelaskan fakta dengan jelas</li>
+    <li>Definisikan dilema dan nilai yang terlibat</li>
+    <li>Identifikasi pihak-pihak berkepentingan</li>
+    <li>Tentukan pilihan yang dapat diambil</li>
+    <li>Evaluasi konsekuensi dari setiap pilihan</li>
+  </ul>
+
+  <h4>Kejahatan dan Penyalahgunaan Komputer</h4>
+  <ul>
+    <li>
+      <strong>Kejahatan komputer</strong>:
+      tindakan melanggar hukum menggunakan komputer
+    </li>
+    <li>
+      <strong>Penyalahgunaan komputer</strong>:
+      tindakan legal namun tidak etis
+    </li>
+  </ul>
+
+  <h4>Risiko Kesehatan Penggunaan Komputer</h4>
+  <ul>
+    <li>
+      <strong>Repetitive Stress Injury (RSI)</strong> dan
+      <strong>Carpal Tunnel Syndrome (CTS)</strong>
+    </li>
+    <li>
+      <strong>Computer Vision Syndrome (CVS)</strong>:
+      mata tegang akibat layar komputer
+    </li>
+    <li>
+      <strong>Technostress</strong>:
+      stres akibat penggunaan teknologi
+    </li>
+  </ul>
+
+  <h4>Ringkasan</h4>
+  <p>
+    Etika dalam sistem informasi menjadi aspek penting di era digital.
+    Penggunaan teknologi harus diimbangi dengan tanggung jawab moral,
+    kesadaran hukum, serta kepedulian terhadap dampak sosial dan kesehatan.
+  </p>
+
+  <h4>Materi Pendukung</h4>
+  <p>
+    <a href="ppt/MIS08.-Etika Dalam Sistem Informasi.pptx" download>
+      Unduh PPT Pertemuan 8
+    </a>
+  </p>
+</div>
+<button class="accordion-header">
+  Pertemuan 9: Masyarakat Informasi dan Sejarahnya
+</button>
+<div class="accordion-content">
+
+  <h4>Gambaran Umum</h4>
+  <p>
+    Pertemuan ini membahas konsep Masyarakat Informasi, yaitu kondisi
+    masyarakat yang menjadikan informasi sebagai sumber daya utama
+    dalam aktivitas sosial, ekonomi, dan organisasi.
+  </p>
+
+  <h4>Pengertian Masyarakat Informasi</h4>
+  <p>
+    Masyarakat informasi adalah masyarakat yang sebagian besar
+    kegiatannya bergantung pada penciptaan, pengolahan, dan distribusi
+    informasi berbasis teknologi komputer dan jaringan.
+  </p>
+
+  <h4>Era Informasi dan Perubahan Paradigma</h4>
+  <p>
+    Era informasi ditandai dengan perubahan paradigma dari sistem
+    konvensional menuju sistem yang lebih fleksibel, profesional,
+    dan berbasis teknologi.
+  </p>
+  <ul>
+    <li>Konvensional → fleksibel</li>
+    <li>Standar → customized</li>
+    <li>Monopoli → kompetitif</li>
+    <li>Birokratis → tidak birokratis</li>
+  </ul>
+
+  <h4>Perubahan Manajemen</h4>
+  <p>
+    Informasi kini dapat mengalir langsung ke manajemen puncak
+    tanpa melalui banyak jenjang organisasi, dengan dukungan
+    Sistem Informasi Manajemen (SIM).
+  </p>
+  <p>
+    Pengambilan keputusan manajemen tingkat atas dibantu oleh
+    <strong>Decision Support System (DSS)</strong>.
+  </p>
+
+  <h4>Ciri-ciri Era Informasi</h4>
+  <ul>
+    <li>Informasi menjadi komoditas utama</li>
+    <li>Distribusi informasi bersifat elektronik</li>
+    <li>Pelayanan berubah dari manual ke elektronik (e-services)</li>
+    <li>Persaingan bersifat global dan ketat</li>
+    <li>Peralihan sektor ekonomi ke jasa</li>
+  </ul>
+
+  <h4>Ciri-ciri Era Informasi (Lanjutan)</h4>
+  <ul>
+    <li>Interaksi langsung antara penyedia dan pengguna</li>
+    <li>Kualitas SDM ditentukan oleh kemampuan mengolah informasi</li>
+    <li>Kepercayaan dan kepuasan pelanggan menjadi tujuan utama</li>
+    <li>Keputusan berbasis teknologi informasi</li>
+    <li>Terbentuknya komunitas masyarakat maya</li>
+  </ul>
+
+  <h4>Dampak Positif Era Informasi</h4>
+  <ul>
+    <li>Efisiensi dan produktivitas</li>
+    <li>Peningkatan pelayanan publik dan bisnis</li>
+    <li>Kenyamanan dan kecepatan akses</li>
+    <li>Hilangnya batas geografis (borderless)</li>
+  </ul>
+
+  <h4>Dampak Negatif Era Informasi</h4>
+  <ul>
+    <li>Rasa takut dan keterasingan sosial</li>
+    <li>Kesenjangan informasi</li>
+    <li>Pelanggaran privasi</li>
+    <li>Pengangguran akibat otomatisasi</li>
+    <li>Kompleksitas sistem yang tinggi</li>
+  </ul>
+
+  <h4>Kunci Keberhasilan Era Informasi</h4>
+  <ul>
+    <li>Creativity</li>
+    <li>Customizability</li>
+    <li>Convenience (kepuasan pelanggan)</li>
+    <li>Pengembangan sumber daya manusia</li>
+  </ul>
+
+  <h4>Layanan Elektronis (e-Services)</h4>
+  <p>
+    e-Services adalah penyediaan layanan melalui internet
+    untuk memenuhi kebutuhan pengguna secara elektronik.
+  </p>
+  <ul>
+    <li>E-commerce</li>
+    <li>E-government</li>
+    <li>E-library</li>
+    <li>E-ticketing</li>
+  </ul>
+
+  <h4>Sejarah Perkembangan Masyarakat Informasi</h4>
+  <p>
+    Pada periode awal (~1970–1990), aplikasi komputer bersifat
+    <em>stand-alone</em> dan tidak terhubung ke jaringan.
+  </p>
+  <p>
+    Periode berikutnya (~1990–2000) ditandai dengan berkembangnya
+    jaringan komputer dan internet, sehingga aplikasi mulai
+    berjalan berbasis jaringan.
+  </p>
+
+  <h4>Perkembangan Layanan Saat Ini</h4>
+  <ul>
+    <li>Layanan online semakin beragam</li>
+    <li>Interaksi semakin kompleks</li>
+    <li>Melibatkan banyak pihak yang saling terhubung</li>
+  </ul>
+
+  <h4>Interaksi Penyedia dan Pemakai</h4>
+  <p>
+    Internet memungkinkan komunikasi langsung antara penyedia
+    dan pemakai layanan, mengurangi peran perantara, serta
+    menekan biaya dan waktu.
+  </p>
+
+  <h4>Hubungan Satu-Satu dan Loyalitas</h4>
+  <p>
+    Hubungan personal antara penyedia dan pemakai sangat
+    bergantung pada tingkat kepercayaan (trust).
+  </p>
+  <ul>
+    <li>Kebenaran dan akurasi informasi</li>
+    <li>Keterbaruan informasi</li>
+    <li>Keamanan informasi</li>
+  </ul>
+
+  <h4>Hubungan Just-in-Time</h4>
+  <p>
+    Hubungan dalam masyarakat informasi sering bersifat
+    <em>just-in-time</em>, yaitu interaksi cepat, fleksibel,
+    dan tidak selalu berkelanjutan.
+  </p>
+
+  <h4>Ringkasan</h4>
+  <p>
+    Masyarakat informasi ditandai dengan peran dominan teknologi
+    informasi dalam kehidupan manusia. Keberhasilan di era ini
+    ditentukan oleh kemampuan mengelola informasi, membangun
+    kepercayaan, serta beradaptasi dengan perubahan teknologi.
+  </p>
+
+  <h4>Materi Pendukung</h4>
+  <p>
+    <a href="ppt/MIS09.-Masyarakat Informasi-Sejarahnya 1.pptx" download>
+      Unduh PPT Pertemuan 9
+    </a>
+  </p>
+</div>
+<button class="accordion-header">
+  Pertemuan 10: Lanjutan Masyarakat Informasi dan Sejarahnya
+</button>
+<div class="accordion-content">
+
+  <h4>Gambaran Umum</h4>
+  <p>
+    Pertemuan ini merupakan lanjutan pembahasan mengenai masyarakat
+    informasi, fokus pada perubahan layanan elektronis, interaksi
+    penyedia dan pemakai, serta tantangan dan konsekuensi di era digital.
+  </p>
+
+  <h4>Era Informasi</h4>
+  <p>
+    Era informasi ditandai dengan berkembangnya aplikasi komputer
+    berbasis teknologi database dan jaringan komputer yang saling
+    terhubung, khususnya dalam dunia bisnis dan pelayanan.
+  </p>
+
+  <h4>Perubahan Paradigma</h4>
+  <ul>
+    <li>Lama: Konvensional, standar, monopoli, terproteksi</li>
+    <li>Baru: Fleksibel, customized, profesional, tidak birokratis</li>
+  </ul>
+
+  <h4>Perubahan Manajemen</h4>
+  <p>
+    Informasi dapat mengalir langsung ke manajemen puncak tanpa
+    campur tangan manajemen tingkat menengah dengan bantuan
+    <strong>Sistem Informasi Manajemen (SIM)</strong>.
+  </p>
+  <p>
+    Manajemen tingkat atas memiliki tanggung jawab yang lebih besar
+    dalam pengambilan keputusan strategis yang dibantu oleh
+    <strong>Decision Support System (DSS)</strong>.
+  </p>
+
+  <h4>Ciri-ciri Era Informasi</h4>
+  <ul>
+    <li>Informasi menjadi komoditas utama</li>
+    <li>Distribusi informasi berbasis elektronik</li>
+    <li>Sistem layanan berubah menjadi e-services</li>
+    <li>Kompetisi bersifat global dan ketat</li>
+    <li>Sektor ekonomi bergeser ke jasa</li>
+  </ul>
+
+  <h4>Ciri-ciri Era Informasi (Lanjutan)</h4>
+  <ul>
+    <li>Interaksi langsung antara penyedia dan pemakai</li>
+    <li>Kualitas SDM ditentukan kemampuan mengolah informasi</li>
+    <li>Kepercayaan dan kepuasan pelanggan menjadi tujuan utama</li>
+    <li>Keputusan berbasis teknologi informasi</li>
+    <li>Terbentuknya komunitas masyarakat maya</li>
+  </ul>
+
+  <h4>Dampak Positif Era Informasi</h4>
+  <ul>
+    <li>Efisiensi dan produktivitas</li>
+    <li>Peningkatan pelayanan publik dan bisnis</li>
+    <li>Kenyamanan dan kecepatan layanan</li>
+    <li>Borderless (tanpa batas geografis)</li>
+  </ul>
+
+  <h4>Dampak Negatif Era Informasi</h4>
+  <ul>
+    <li>Rasa takut dan keterasingan sosial</li>
+    <li>Kesenjangan informasi</li>
+    <li>Pelanggaran privasi</li>
+    <li>Pengangguran akibat otomatisasi</li>
+    <li>Kompleksitas sistem yang tinggi</li>
+  </ul>
+
+  <h4>Kunci Keberhasilan Era Informasi</h4>
+  <ul>
+    <li>Creativity</li>
+    <li>Customizability</li>
+    <li>Convenience (kepuasan pelanggan)</li>
+    <li>Pengembangan sumber daya manusia</li>
+  </ul>
+
+  <h4>Layanan Elektronis (e-Services)</h4>
+  <p>
+    Layanan elektronis adalah penyediaan layanan melalui internet
+    untuk memenuhi kebutuhan pengguna secara elektronik.
+  </p>
+  <ul>
+    <li>E-commerce (jual beli online)</li>
+    <li>E-government (layanan publik digital)</li>
+    <li>E-library (perpustakaan digital)</li>
+    <li>E-ticketing (tiket elektronik)</li>
+  </ul>
+
+  <h4>Sejarah Perkembangan Layanan Elektronis</h4>
+  <p>
+    Pada periode awal (~1970–1990), aplikasi komputer bersifat
+    <em>stand-alone</em> dan dirancang untuk kebutuhan tertentu
+    tanpa terhubung ke jaringan.
+  </p>
+
+  <h4>Perkembangan Jaringan (~1990–2000)</h4>
+  <p>
+    Perkembangan teknologi jaringan dan internet mengubah karakteristik
+    aplikasi menjadi berbasis jaringan, sehingga muncul konsep layanan
+    antara penyedia dan pemakai.
+  </p>
+
+  <h4>Perkembangan Layanan Saat Ini</h4>
+  <ul>
+    <li>Jenis layanan online semakin beragam</li>
+    <li>Melibatkan banyak pihak</li>
+    <li>Interaksi semakin kompleks</li>
+    <li>Membutuhkan integrasi antar sistem</li>
+  </ul>
+
+  <h4>Interaksi Penyedia dan Pemakai</h4>
+  <p>
+    Internet memungkinkan komunikasi langsung antara penyedia dan
+    pemakai layanan tanpa perantara, sehingga mengurangi biaya,
+    waktu, dan usaha.
+  </p>
+
+  <h4>Hubungan Satu-Satu dan Loyalitas</h4>
+  <p>
+    Hubungan personal antara penyedia dan pemakai sangat bergantung
+    pada tingkat kepercayaan (trust).
+  </p>
+  <ul>
+    <li>Kebenaran dan akurasi informasi</li>
+    <li>Keterbaruan informasi</li>
+    <li>Keamanan informasi</li>
+  </ul>
+
+  <h4>Hubungan Just-in-Time</h4>
+  <p>
+    Hubungan dalam masyarakat informasi sering bersifat
+    <em>just-in-time</em>, yaitu interaksi cepat, ad-hoc,
+    dan tidak selalu berkelanjutan.
+  </p>
+
+  <h4>Ringkasan</h4>
+  <p>
+    Era masyarakat informasi ditandai oleh dominasi teknologi
+    informasi dan layanan digital. Keberhasilan di era ini
+    ditentukan oleh kemampuan beradaptasi, membangun kepercayaan,
+    serta mengelola informasi secara efektif.
+  </p>
+
+  <h4>Materi Pendukung</h4>
+  <p>
+    <a href="ppt/MIS010.-Lanjutan - Masyarakat Informasi-Sejarahnya.pptx" download>
+      Unduh PPT Pertemuan 10
+    </a>
+  </p>
+</div>
+<button class="accordion-header">
+  Pertemuan 11: Melindungi Sistem Informasi
+</button>
+<div class="accordion-content">
+
+  <h4>Gambaran Umum</h4>
+  <p>
+    Pertemuan ini membahas pentingnya perlindungan sistem informasi
+    dari berbagai ancaman, kerentanan, dan penyalahgunaan.
+    Materi ini menekankan peran pengamanan (security) dan pengendalian (control)
+    dalam menjaga aset informasi organisasi.
+  </p>
+
+  <h4>Pengertian Pengamanan dan Pengendalian</h4>
+  <p>
+    Pengamanan (security) merujuk pada kebijakan, prosedur, dan
+    pengukuran teknis yang digunakan untuk mencegah akses tidak sah,
+    pencurian, perubahan, atau kerusakan fisik pada sistem informasi.
+  </p>
+  <p>
+    Pengendalian (control) mencakup seluruh metode, kebijakan, dan
+    prosedur organisasi untuk menjamin keselamatan aset,
+    keandalan data, serta kepatuhan terhadap standar manajemen.
+  </p>
+
+  <h4>Mengapa Sistem Informasi Perlu Dilindungi</h4>
+  <ul>
+    <li>Konsentrasi data dalam bentuk elektronik</li>
+    <li>Otomatisasi proses yang mengurangi pengawasan manual</li>
+    <li>Risiko kesalahan (error), kecurangan, dan penyalahgunaan</li>
+    <li>Kerentanan sistem berbasis web terhadap serangan eksternal</li>
+    <li>Tantangan pengamanan jaringan nirkabel (Wi-Fi)</li>
+  </ul>
+
+  <h4>Ancaman terhadap Sistem Informasi</h4>
+  <ul>
+    <li>Software berbahaya: Virus, Worm, Trojan Horse, Spyware</li>
+    <li>Hacker, Cracker, dan Cybervandalism</li>
+    <li>Serangan Spoofing dan Sniffing</li>
+    <li>Serangan Denial of Service (DoS)</li>
+    <li>Kejahatan komputer seperti Phishing dan Pharming</li>
+    <li>Ancaman internal dari karyawan</li>
+    <li>Kerentanan sistem operasi dan perangkat lunak</li>
+  </ul>
+
+  <h4>Nilai Bisnis Pengamanan dan Pengendalian</h4>
+  <p>
+    Pengamanan dan pengendalian sistem informasi sangat penting
+    karena kegagalan sistem dapat menyebabkan kerugian besar,
+    seperti kehilangan data rahasia, penurunan produktivitas,
+    dan kerusakan reputasi perusahaan.
+  </p>
+  <p>
+    Berbagai regulasi seperti Undang-Undang ITE dan standar internasional
+    mewajibkan organisasi menerapkan pengamanan data yang ketat.
+  </p>
+
+  <h4>Kerangka Kerja Pengamanan dan Pengendalian</h4>
+  <ul>
+    <li>Penilaian risiko (Risk Assessment)</li>
+    <li>Kebijakan pengamanan sistem</li>
+    <li>Perencanaan pemulihan bencana</li>
+    <li>Perencanaan keberlangsungan bisnis</li>
+    <li>Alih kontrak pengamanan</li>
+    <li>Peran audit sistem informasi</li>
+  </ul>
+
+  <h4>Teknologi dan Perangkat Pengamanan</h4>
+  <ul>
+    <li>Kontrol akses (Access Control)</li>
+    <li>Autentikasi: token, smart card, dan biometrik</li>
+    <li>Firewall untuk mengontrol lalu lintas jaringan</li>
+    <li>Sistem Deteksi Gangguan (IDS)</li>
+    <li>Antivirus dan antispyware</li>
+    <li>Pengamanan jaringan nirkabel (WEP dan VPN)</li>
+  </ul>
+
+  <h4>Enkripsi dan Infrastruktur Kunci Publik</h4>
+  <p>
+    Enkripsi adalah proses mengubah data menjadi bentuk sandi
+    agar tidak dapat dibaca oleh pihak yang tidak berwenang.
+    Data hanya dapat dibuka menggunakan kunci enkripsi yang sesuai.
+  </p>
+  <ul>
+    <li>SSL (Secure Socket Layer)</li>
+    <li>TLS (Transport Layer Security)</li>
+    <li>S-HTTP (Secure Hypertext Transfer Protocol)</li>
+  </ul>
+
+  <h4>Sertifikasi Digital</h4>
+  <p>
+    Sertifikat digital digunakan untuk mengautentikasi identitas
+    pengguna dan melindungi transaksi elektronik agar tetap aman
+    dan terenkripsi.
+  </p>
+
+  <h4>Ringkasan</h4>
+  <p>
+    Perlindungan sistem informasi merupakan kebutuhan utama
+    bagi organisasi modern. Dengan penerapan pengamanan,
+    pengendalian, dan teknologi yang tepat, organisasi dapat
+    menjaga aset informasi, meningkatkan kepercayaan,
+    serta mendukung kelangsungan bisnis.
+  </p>
+
+  <h4>Materi Pendukung</h4>
+  <p>
+    <a href="ppt/MIS011-Melindungi Sistem Informasi.pptx" download>
+      Unduh PPT Pertemuan 11
+    </a>
+  </p>
+</div>
+<button class="accordion-header">
+  Pertemuan 12: Entity Relationship Diagram (ERD)
+</button>
+<div class="accordion-content">
+
+  <h4>Gambaran Umum</h4>
+  <p>
+    Pertemuan ini membahas konsep dasar pengelolaan data dalam sistem informasi,
+    khususnya mengenai Entity Relationship Diagram (ERD) sebagai alat pemodelan data.
+    ERD digunakan untuk menggambarkan struktur data, hubungan antar data,
+    serta dasar perancangan basis data relasional.
+  </p>
+
+  <h4>Hierarki Data</h4>
+  <p>
+    Data dalam sistem komputer disusun dalam suatu hierarki yang terstruktur,
+    mulai dari unit terkecil hingga membentuk sebuah basis data.
+  </p>
+  <ul>
+    <li><strong>Bit</strong>: unit data terkecil dalam komputer</li>
+    <li><strong>Byte</strong>: kumpulan bit yang merepresentasikan satu karakter</li>
+    <li><strong>Field</strong>: sekumpulan karakter yang membentuk atribut</li>
+    <li><strong>Record</strong>: kumpulan field yang merepresentasikan satu entitas</li>
+    <li><strong>File</strong>: kumpulan record sejenis</li>
+    <li><strong>Database</strong>: kumpulan file yang saling berhubungan</li>
+  </ul>
+
+  <h4>Lingkungan File Tradisional</h4>
+  <p>
+    Pada sistem file tradisional, setiap bagian organisasi
+    mengelola data dan aplikasinya sendiri tanpa perencanaan terpusat.
+    Hal ini menyebabkan pertumbuhan sistem yang tidak terkoordinasi.
+  </p>
+
+  <h4>Masalah pada Sistem File Tradisional</h4>
+  <ul>
+    <li>Redundansi dan inkonsistensi data</li>
+    <li>Ketergantungan program terhadap data</li>
+    <li>Kurangnya fleksibilitas sistem</li>
+    <li>Keamanan data yang lemah</li>
+    <li>Keterbatasan dalam berbagi dan ketersediaan data</li>
+  </ul>
+
+  <h4>Pendekatan Basis Data</h4>
+  <p>
+    Pendekatan basis data bertujuan untuk memusatkan pengelolaan data
+    agar dapat digunakan oleh berbagai aplikasi secara efisien
+    serta mengurangi redundansi data.
+  </p>
+  <p>
+    Sistem Manajemen Basis Data (DBMS) berfungsi sebagai perantara
+    antara program aplikasi dan data fisik yang tersimpan.
+  </p>
+
+  <h4>Pengertian Entity dan Atribut</h4>
+  <p>
+    <strong>Entity</strong> adalah objek atau konsep yang dapat dibedakan
+    dan memiliki data yang disimpan dalam basis data.
+  </p>
+  <p>
+    <strong>Atribut</strong> merupakan karakteristik atau properti
+    yang menjelaskan sebuah entity.
+  </p>
+
+  <h4>Relationship</h4>
+  <p>
+    Relationship menunjukkan hubungan antar entity dalam sistem.
+    Hubungan ini biasanya digambarkan menggunakan kata kerja.
+  </p>
+
+  <h4>Cardinality (Tingkat Hubungan)</h4>
+  <ul>
+    <li><strong>One-to-One (1:1)</strong></li>
+    <li><strong>One-to-Many (1:M)</strong></li>
+    <li><strong>Many-to-Many (M:N)</strong></li>
+  </ul>
+
+  <h4>Jenis Entity</h4>
+  <ul>
+    <li><strong>Strong Entity</strong>: entity yang memiliki primary key sendiri</li>
+    <li><strong>Weak Entity</strong>: entity yang bergantung pada entity lain</li>
+  </ul>
+
+  <h4>Transformasi ERD ke LRS</h4>
+  <p>
+    ERD dapat ditransformasikan menjadi Logical Record Structure (LRS)
+    yang selanjutnya diubah menjadi tabel relasional.
+  </p>
+  <ul>
+    <li>Setiap entity menjadi satu tabel</li>
+    <li>Atribut menjadi kolom tabel</li>
+    <li>Primary key menjadi identitas utama tabel</li>
+    <li>Relationship direpresentasikan dengan foreign key</li>
+  </ul>
+
+  <h4>Transformasi Relationship</h4>
+  <ul>
+    <li>Relationship 1:1 digabung ke salah satu entity</li>
+    <li>Relationship 1:M digabung ke sisi many</li>
+    <li>Relationship M:N dibuatkan tabel baru</li>
+  </ul>
+
+  <h4>Manfaat Basis Data bagi Organisasi</h4>
+  <ul>
+    <li>Meningkatkan efisiensi proses bisnis</li>
+    <li>Mendukung pengambilan keputusan</li>
+    <li>Menyediakan data yang akurat dan terintegrasi</li>
+    <li>Meningkatkan keamanan dan kualitas data</li>
+  </ul>
+
+  <h4>Ringkasan</h4>
+  <p>
+    Entity Relationship Diagram merupakan alat penting
+    dalam perancangan basis data.
+    Dengan ERD, struktur data dan hubungan antar data
+    dapat dipahami secara sistematis sebelum diimplementasikan
+    ke dalam basis data relasional.
+  </p>
+
+  <h4>Materi Pendukung</h4>
+  <p>
+    <a href="ppt/MIS012-Relationship Diagram.pptx" download>
+      Unduh PPT Pertemuan 12
+    </a>
+  </p>
+</div>
+<button class="accordion-header">
+  Pertemuan 13: Sistem Informasi Manajemen dan Data Worker
+</button>
+<div class="accordion-content">
+
+  <h4>Gambaran Umum</h4>
+  <p>
+    Pertemuan ini membahas konsep dasar Sistem Informasi Manajemen (SIM)
+    dalam konteks bisnis modern, serta peran data worker dan knowledge worker
+    dalam memanfaatkan sistem informasi untuk mendukung operasional,
+    pengambilan keputusan, dan strategi organisasi.
+  </p>
+
+  <h4>Konsep Dasar Sistem Informasi Bisnis</h4>
+  <p>
+    Sistem Informasi Bisnis merupakan sistem yang dirancang
+    untuk mendukung proses bisnis organisasi melalui pengolahan data
+    menjadi informasi yang bernilai.
+  </p>
+  <p>
+    Teknologi Informasi (TI) atau Information Technology (IT)
+    adalah bagian dari sistem informasi yang berfokus pada teknologi
+    komputer dalam pengolahan dan penyampaian informasi.
+  </p>
+
+  <h4>Tingkatan Sistem Teknologi Informasi</h4>
+  <p>
+    Sistem Teknologi Informasi dibangun dalam beberapa tingkatan
+    yang membentuk sebuah piramida, yaitu:
+  </p>
+  <ul>
+    <li>Konsep dasar sistem informasi</li>
+    <li>Teknologi (hardware, software, jaringan)</li>
+    <li>Aplikasi sistem informasi</li>
+    <li>Pengembangan sistem</li>
+    <li>Pengelolaan dan manajemen sistem</li>
+  </ul>
+
+  <h4>Aturan Dasar Sistem Informasi dalam Bisnis</h4>
+  <ul>
+    <li>Mendukung proses dan operasi bisnis</li>
+    <li>Mendukung pengambilan keputusan pegawai dan manajer</li>
+    <li>Mendukung strategi untuk keunggulan bersaing</li>
+  </ul>
+
+  <h4>Perkembangan dan Tren Sistem Informasi</h4>
+  <ul>
+    <li>Peran sistem informasi tidak hanya dikelola oleh CIO, tetapi juga Executive Board</li>
+    <li>Pergeseran fungsi IS Department dari pengembang aplikasi menjadi integrator sistem</li>
+    <li>Perkembangan internet dan intranet yang menciptakan konektivitas global</li>
+    <li>Penggunaan antarmuka pengguna yang seragam pada berbagai sistem</li>
+  </ul>
+
+  <h4>Perlunya Integrasi Sistem</h4>
+  <p>
+    Integrasi sistem diperlukan karena perkembangan komputerisasi
+    dalam organisasi sering terjadi secara terpisah-pisah.
+  </p>
+  <ul>
+    <li>Mengurangi sistem yang tersebar (scattered systems)</li>
+    <li>Mengatasi hambatan teknologi</li>
+    <li>Meningkatkan efisiensi pertukaran data</li>
+  </ul>
+
+  <h4>Konsep E-Business</h4>
+  <p>
+    E-Business merupakan pemanfaatan teknologi informasi dan internet
+    untuk mendukung proses bisnis secara elektronik.
+  </p>
+
+  <h4>Elemen Utama E-Business</h4>
+  <ul>
+    <li><strong>Komunikasi</strong>: pertukaran informasi dan transaksi elektronik</li>
+    <li><strong>Komersial</strong>: transaksi online mulai dari pemesanan hingga pembayaran</li>
+    <li><strong>Proses Bisnis</strong>: optimalisasi alur kerja internal</li>
+    <li><strong>Layanan</strong>: peningkatan kualitas pelayanan pelanggan</li>
+    <li><strong>Learning</strong>: edukasi bagi pengguna dan pelaku e-business</li>
+    <li><strong>Kolaborasi</strong>: kerja sama dengan berbagai pihak terkait</li>
+    <li><strong>Komunitas</strong>: media interaksi dan pertukaran pengalaman</li>
+  </ul>
+
+  <h4>Faktor Keberhasilan E-Business</h4>
+  <ul>
+    <li>Efisiensi biaya (cost efficiency)</li>
+    <li>Profitabilitas dan nilai komersial</li>
+    <li>Kualitas konten dan informasi</li>
+    <li>Komunitas pengguna</li>
+    <li>Kenyamanan dan kemudahan penggunaan</li>
+    <li>Konektivitas jaringan yang cepat dan stabil</li>
+  </ul>
+
+  <h4>Tipe Sistem Informasi dalam Organisasi</h4>
+  <ul>
+    <li><strong>Transaction Processing System (TPS)</strong>: mendukung transaksi rutin</li>
+    <li><strong>Knowledge Work System (KWS)</strong>: mendukung penciptaan pengetahuan</li>
+    <li><strong>Office Automation System (OAS)</strong>: meningkatkan produktivitas data worker</li>
+    <li><strong>Management Information System (MIS)</strong>: mendukung manajemen menengah</li>
+    <li><strong>Decision Support System (DSS)</strong>: mendukung keputusan semi-terstruktur</li>
+    <li><strong>Executive Support System (ESS)</strong>: mendukung keputusan strategis</li>
+  </ul>
+
+  <h4>Sumber Daya Sistem Informasi</h4>
+  <ul>
+    <li><strong>Sumber daya manusia</strong>: pemakai akhir dan pakar TI</li>
+    <li><strong>Hardware</strong>: mesin dan media penyimpanan</li>
+    <li><strong>Software</strong>: sistem operasi dan aplikasi</li>
+    <li><strong>Data</strong>: database dan file organisasi</li>
+    <li><strong>Jaringan</strong>: media komunikasi dan perangkat jaringan</li>
+  </ul>
+
+  <h4>Aktivitas Sistem Informasi</h4>
+  <ul>
+    <li>Input data</li>
+    <li>Pemrosesan data menjadi informasi</li>
+    <li>Output informasi</li>
+    <li>Penyimpanan data</li>
+    <li>Pengendalian kinerja sistem</li>
+  </ul>
+
+  <h4>Ringkasan</h4>
+  <p>
+    Sistem Informasi Manajemen berperan penting
+    dalam mendukung kegiatan operasional,
+    pengambilan keputusan, dan strategi bisnis.
+    Peran data worker dan knowledge worker
+    menjadi semakin vital seiring meningkatnya
+    pemanfaatan teknologi informasi dalam organisasi.
+  </p>
+
+  <h4>Materi Pendukung</h4>
+  <p>
+    <a href="ppt/MIS013 SIM dan Data Worker.pptx" download>
+      Unduh PPT Pertemuan 13
+    </a>
+  </p>
+</div>
+<button class="accordion-header">
+  Pertemuan 14: Sistem Penunjang Keputusan (Decision Support System / DSS)
+</button>
+<div class="accordion-content">
+
+  <h4>Gambaran Umum</h4>
+  <p>
+    Pertemuan ini membahas konsep Sistem Penunjang Keputusan (Decision Support System / DSS),
+    yaitu sistem berbasis komputer yang dirancang untuk membantu manajer
+    dalam pengambilan keputusan, khususnya keputusan yang bersifat
+    semi-terstruktur dan tidak terstruktur.
+  </p>
+
+  <h4>Pengertian Keputusan</h4>
+  <p>
+    Keputusan merupakan proses pemilihan alternatif tindakan terbaik
+    dari sejumlah alternatif yang tersedia untuk memecahkan suatu masalah.
+  </p>
+
+  <h4>Keputusan Menurut Herbert A. Simon</h4>
+  <p>
+    Simon membedakan keputusan menjadi dua jenis utama:
+  </p>
+  <ul>
+    <li><strong>Keputusan Terprogram</strong>: bersifat rutin dan berulang, serta telah memiliki prosedur baku</li>
+    <li><strong>Keputusan Tidak Terprogram</strong>: bersifat baru, tidak terstruktur, dan tidak rutin</li>
+  </ul>
+  <p>
+    Kedua jenis keputusan tersebut tidak selalu terpisah secara tegas,
+    melainkan berada dalam suatu spektrum yang saling berkaitan.
+  </p>
+
+  <h4>Fase Pengambilan Keputusan Menurut Simon</h4>
+  <ul>
+    <li><strong>Intelligence</strong>: mengidentifikasi dan memahami masalah</li>
+    <li><strong>Design</strong>: merancang dan menganalisis alternatif solusi</li>
+    <li><strong>Choice</strong>: memilih alternatif terbaik</li>
+    <li><strong>Review</strong>: mengevaluasi keputusan yang telah diambil</li>
+  </ul>
+
+  <h4>Keputusan Menurut Henry Mintzberg</h4>
+  <p>
+    Mintzberg mengemukakan peranan manajerial yang berkaitan dengan
+    pengambilan keputusan, khususnya dalam peran desisional.
+  </p>
+
+  <h4>Peranan Desisional Menurut Mintzberg</h4>
+  <ul>
+    <li><strong>Entrepreneur</strong>: menciptakan dan mengembangkan inovasi</li>
+    <li><strong>Disturbance Handler</strong>: menangani gangguan dan masalah tak terduga</li>
+    <li><strong>Resource Allocator</strong>: mengalokasikan sumber daya organisasi</li>
+    <li><strong>Negotiator</strong>: melakukan negosiasi internal dan eksternal</li>
+  </ul>
+
+  <h4>Pengertian DSS</h4>
+  <p>
+    Decision Support System (DSS) adalah sistem yang memberikan dukungan
+    kepada seorang manajer atau sekelompok manajer dalam memecahkan
+    masalah semi-terstruktur dengan menyediakan informasi,
+    model analisis, dan saran keputusan.
+  </p>
+
+  <h4>Sejarah Perkembangan DSS</h4>
+  <p>
+    Pengembangan DSS dimulai pada akhir tahun 1960-an dengan adanya
+    sistem time-sharing yang memungkinkan interaksi langsung
+    antara pengguna dan komputer.
+  </p>
+  <p>
+    Istilah DSS diperkenalkan oleh G. Anthony Gorry dan Michael S. Scott Morton
+    melalui kerangka kerja Sistem Informasi Manajemen.
+  </p>
+
+  <h4>Jenis-Jenis DSS Menurut Steven L. Alter</h4>
+  <ul>
+    <li>Retrieve information elements</li>
+    <li>Analyze data files</li>
+    <li>Prepare reports from multiple files</li>
+    <li>Estimate decision consequences</li>
+    <li>Propose decision</li>
+    <li>Make decision</li>
+  </ul>
+
+  <h4>Tujuan DSS</h4>
+  <ul>
+    <li>Membantu manajer dalam memecahkan masalah semi-terstruktur</li>
+    <li>Mendukung keputusan manajer, bukan menggantikannya</li>
+    <li>Meningkatkan efektivitas pengambilan keputusan</li>
+  </ul>
+
+  <h4>Penggunaan Informasi dalam DSS</h4>
+  <p>
+    Informasi dalam DSS digunakan oleh manajer untuk:
+  </p>
+  <ul>
+    <li>Mendefinisikan masalah</li>
+    <li>Menganalisis alternatif keputusan</li>
+    <li>Memilih solusi terbaik</li>
+  </ul>
+
+  <h4>Laporan dalam DSS</h4>
+  <ul>
+    <li><strong>Laporan Berkala</strong>: laporan yang disusun secara periodik</li>
+    <li><strong>Laporan Khusus</strong>: laporan yang dibuat saat terjadi kondisi tidak normal</li>
+    <li><strong>Laporan Detail</strong>: laporan lengkap setiap transaksi</li>
+    <li><strong>Laporan Ringkas</strong>: laporan dalam bentuk rangkuman</li>
+  </ul>
+
+  <h4>Pemodelan Matematis</h4>
+  <p>
+    Model merupakan representasi abstrak dari suatu sistem atau fenomena
+    untuk membantu analisis dan pengambilan keputusan.
+  </p>
+
+  <h4>Jenis Model</h4>
+  <ul>
+    <li><strong>Model Statis</strong> dan <strong>Model Dinamis</strong></li>
+    <li><strong>Model Deterministik</strong> dan <strong>Model Probabilistik</strong></li>
+    <li><strong>Model Optimisasi</strong> dan <strong>Model Suboptimisasi</strong></li>
+  </ul>
+
+  <h4>Simulasi</h4>
+  <p>
+    Simulasi adalah proses menjalankan model untuk mempelajari
+    perilaku sistem dan mengevaluasi dampak berbagai alternatif keputusan.
+  </p>
+
+  <h4>Keuntungan dan Kelemahan Pemodelan</h4>
+  <ul>
+    <li><strong>Keuntungan</strong>: mempercepat evaluasi keputusan dan meningkatkan kemampuan peramalan</li>
+    <li><strong>Kelemahan</strong>: membutuhkan keahlian tinggi dan tidak selalu mencerminkan kondisi nyata</li>
+  </ul>
+
+  <h4>DSS Kelompok (Group Decision Support System / GDSS)</h4>
+  <p>
+    GDSS merupakan sistem penunjang keputusan yang digunakan
+    oleh kelompok untuk mendukung diskusi, pertukaran ide,
+    dan pemecahan masalah secara kolaboratif.
+  </p>
+
+  <h4>Ringkasan</h4>
+  <p>
+    Sistem Penunjang Keputusan membantu manajer
+    dalam menghadapi kompleksitas masalah modern.
+    DSS tidak menggantikan peran manajer,
+    tetapi meningkatkan kualitas dan efektivitas
+    keputusan yang diambil.
+  </p>
+
+  <h4>Materi Pendukung</h4>
+  <p>
+    <a href="ppt/MIS014 - DSS.pptx" download>
+      Unduh PPT Pertemuan 14
+    </a>
+  </p>
+</div>
+  </div>
+</div>
+
+<!-- TENTANG -->
+<div class="page fade" id="tentang">
+  <div class="profile-card">
+    <img src="foto-saya.jpeg">
+    <h3>Aryansyah Al Giffari</h3>
+    <p><strong>NIM:</strong> 231011402190</p>
+    <p><strong>Kelas:</strong> Karyawan</p>
+    <p><strong>Prodi:</strong> Teknik Informatika</p>
+    <p><strong>Kampus:</strong> Universitas Pamulang</p>
+  </div>
+</div>
+
+<footer>© 2026 Rembulan</footer>
+</div>
+
+<script>
+function login(){
+  loginPage.style.display='none';
+  mainPage.style.display='block';
+}
+
+function enterLogin(e){
+  if(e.key==="Enter") login();
+}
+
+function goHome(){
+  document.querySelectorAll('.page').forEach(p=>p.style.display='none');
+  landing.style.display='flex';
+}
+
+function openPage(id){
+  landing.style.display='none';
+  document.querySelectorAll('.page').forEach(p=>p.style.display='none');
+  document.getElementById(id).style.display='block';
+}
+
+function toggleInfo(){
+  document.getElementById('infoKuliah').classList.toggle('show');
+}
+
+function toggleDark(){
+  document.body.classList.toggle('dark');
+}
+
+document.querySelectorAll('.accordion-header').forEach(btn=>{
+  btn.onclick=()=>{
+    let c=btn.nextElementSibling;
+    c.style.maxHeight=c.style.maxHeight?null:c.scrollHeight+'px';
+  }
+});
+</script>
+
+</body>
+</html>
